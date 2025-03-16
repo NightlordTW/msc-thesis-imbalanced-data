@@ -1,14 +1,67 @@
-\documentclass{article}
-\usepackage{graphicx} % Required for inserting images
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass[a4paper,twoside,openright,10pt]{report}
+\usepackage{graphicx}
+\usepackage{makeidx}
+\usepackage{wrapfig}
+\usepackage{pdflscape}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage[ma,mnf,master]{mccover}
+\usepackage{subfig}
+\makeindex
 
-\title{msc-thesis-imbalanced-data}
-\author{Thomas Debray}
-\date{March 2025}
+
+
+\maintitle{Classification in Imbalanced Datasets}
+\authors{Thomas Debray}
+\issnum{2002}{3}
+\sernum{LUNFMA}{3017}{2002}
+
+
 
 \begin{document}
+%\frontcover
+\pagenumbering{roman}	%roman page numbering till start of thesis
 
-\maketitle
+%Title Page
+\pagestyle{empty} %No headings for the first pages.
+\input{titlepage}
 
-\section{Introduction}
+%preface
+\setcounter{page}{0}	%start counting at 0
+\cleardoublepage			%preface starts at odd page
+\input{01-preface.tex}
 
+%abstract
+\cleardoublepage	%abstract starts at odd page
+\input{02-abstract.tex}
+
+%% Table of contents %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage	%table of contents starts at odd page
+\tableofcontents %Table of contents
+
+%% Chapters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage %The first chapter should start on an odd page.
+\pagestyle{plain} %Now display headings: headings / fancy / ...
+\newpage\pagenumbering{arabic}\setcounter{page}{1}
+
+\include{1-introduction}
+\include{2-classification}
+\include{3-classificationimbalanced}
+\include{5-newapproach}
+\include{4-experiments}
+%\include{6-experiments-rnb}
+\include{7-conclusion}
+
+%\newpage
+%\include{attachments}
+
+\newpage
+\bibliographystyle{acm}
+\bibliography{myrefs}
+
+\backcover
 \end{document}

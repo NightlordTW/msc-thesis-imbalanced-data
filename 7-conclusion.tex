@@ -1,0 +1,20 @@
+\chapter{Conclusion}\label{Conclusion}
+In this chapter we present our answers to the research questions and recommendations for future research. The answers are provided in section~\ref{conclusion-answer}. The recommendations are summarized in section~\ref{conclusion-recommendations}.
+
+\section{Thesis Conclusion}\label{conclusion-answer}
+
+Given the overview provided in chapter~\ref{imbalanced} and the experiments we showed in chapter~\ref{Experiments}, we are in position to answer our first research question:
+
+\begin{quote}\emph{Which existing techniques improve classification in the presence of class imbalanced data?}\end{quote}
+
+The answer to this question can be formulated as follows. The most promising techniques are based on combining ensembles and sampling techniques, which is illustrated by the experiments with Bagging for Imbalanced Datasets (section~\ref{exp-bagging}) and MetaCost (section~\ref{exp-metacost}). The results can also be improved by better estimating data distribution (e.g. Laplace estimate in a Naive Bayes classifier) or proper tuning the probability decision thresholds of scoring classifiers. In this context, we note the importance of appropriate evaluation metrics as AUC when measuring the classifier's performance.
+
+After this answer, we continue with the second research question:
+
+\begin{quote}\emph{Can Naive Bayes Sampling additionally improve classification for class imbalanced data?}\end{quote}
+
+An answer to this question can mainly be found in chapter~\ref{newapproach}. Although we showed that Naive Bayes Sampling changes the bias and variance of the estimate, it is unclear what the exact relation is. The reason is that measuring the impact of imposing feature independence is a very complicated task. Similar problems moreover occur  in different approaches that implement a strategy to make the independence assumption more true. Hence, we suggest to compare different sampling schemes beside Naive Bayes Sampling before making a statement about its performance. However, experiment results show that Naive Bayes Sampling can indeed improve classification for class imbalanced data.
+
+
+\section{Future Research}\label{conclusion-recommendations}
+Future research will focus on the following issues. First, we will improve bootstrapping of numerical features (1) by applying exactly the same sampling scheme as for nominal feature values, or (2) by estimating different distributions than the (augmented) Gaussian. Second, we will experiment under-sampling of the majority class in very large datasets by applying Naive Bayes Sampling. Third, we will investigate a technique that penalizes existing feature dependencies depending on the amount of examples that describe them. As a result, it would be possible to present generated samples to different learning algorithms than Naive Bayes. However, given the fact that minority classes often lack in descriptive data, we are not sure if this approach would allow big improvements.

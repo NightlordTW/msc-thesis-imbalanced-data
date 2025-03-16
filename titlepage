@@ -1,0 +1,39 @@
+\begin{titlepage}
+\begin{center}
+
+\setcounter{page}{0}
+\thispagestyle{empty}
+
+\textsf{\huge
+	\vspace{1cm}
+	\rule{6cm}{1pt}\\[0.5cm]
+	\textbf{Classification in Imbalanced Datasets}\\[0.5cm]
+	Thomas Debray\\[0.5cm]
+	\rule{6cm}{1pt}
+	\vspace{0.3cm}\\
+	\normalsize
+	DKE-09-17
+	\vspace{1cm}\\
+	\Large
+	Master's Thesis in Artificial Intelligence\\
+	Faculty of Humanities and Sciences, Maastricht University
+	\vspace{1cm}\\
+	\normalsize
+	\textbf{Supervisors:}
+	\vspace{0.2cm}\\
+	Dr. E. Smirnov\\Department of Knowledge Engeneering . Maastricht University
+	\vspace{0.2cm}\\
+	Dr. Georgi Nalbantov\\Department of Knowledge Engeneering . Maastricht University
+	\vspace{0.2cm}\\
+	Prof. F. Buntinx\\Departement of General Practice . Katholieke Universiteit Leuven
+	\vspace{4.0cm}\\
+	\Large
+	A dissertation submitted in partial fullfilment of the requirements for the degree of Master of Science
+	\vspace{1.2cm}\\
+	\normalsize
+	\today
+}\\[6.5cm]
+
+
+\end{center}
+\end{titlepage}

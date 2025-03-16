@@ -1,0 +1,399 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mccover}[2008/06/23 v2.2 A4-omslag]
+%%
+%% Omskrivning frn klass till paket av Anna Lindgren 000330
+%%
+%% 19/4-04: fixat bugg vid twocolumn
+%%
+%  v2.2: 2008-06-23:
+%   a) Anpassad till LTHs nya profil:
+%        Faculty of Engineering istf LTH,
+%        LU-logo p engelsk LTH
+%        Ny svensk LTH-logo,
+%        Faculty of Science p MNF
+%   b) Bttre felmeddelanden och varningar
+%   c) Lagt till Kandidatexjobb
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% typsnittsval
+\newcommand{\@normaln}{%
+  \fontencoding{T1}\fontfamily{pfr}\fontseries{m}\fontshape{n}%
+  \fontsize{12}{14.5pt}\selectfont}
+\newcommand{\@largen}{%
+  \fontencoding{T1}\fontfamily{pfr}\fontseries{m}\fontshape{n}%
+  \fontsize{14}{18pt}\selectfont}
+\newcommand{\@largesc}{%
+  \fontencoding{T1}\fontfamily{pfr}\fontseries{m}\fontshape{sc}%
+  \fontsize{14}{18pt}\selectfont}
+\newcommand{\@Largesc}{%
+  \fontencoding{T1}\fontfamily{pfr}\fontseries{m}\fontshape{sc}%
+  \fontsize{17}{22pt}\selectfont}
+\newcommand{\@LARGEsc}{%
+  \fontencoding{T1}\fontfamily{pfr}\fontseries{m}\fontshape{sc}%
+  \fontsize{20}{25pt}\selectfont}
+\newcommand{\@hugesc}{%
+  \fontencoding{T1}\fontfamily{pfr}\fontseries{m}\fontshape{sc}%
+  \fontsize{25}{30pt}\selectfont}
+\newcommand{\@sattlangder}{%
+  \setlength{\textbottom}%
+  {1in+1\voffset+1\topmargin+1\headheight+1\headsep+1\textheight}
+  \setlength{\leftonpage}{1\paperheight-1\textbottom}
+  \setlength{\tillvansterkant}%
+  {-1\oddsidemargin-1in-1\hoffset+1\lufttillvanster}
+  \setlength{\tilltextbotten}{-1\leftonpage+1\luftunder}
+  \setlength{\tillsidbotten}{-1\leftonpage-1\luft}
+  \setlength{\texthojd}{1\paperheight-1\luftover-1\luftunder}
+  \setlength{\textbredd}{1\paperwidth-1\lufttillvanster-1\lufttillhoger}
+  \setlength{\nerstreck}{1\luftunder-1\luft}
+  \setlength{\uppstreck}{1\paperheight-1\nerstreck-1\MC}
+  \setlength{\helastrecket}{1\uppstreck+1\MC+1\nerstreck}
+  \setlength{\mittenbak}{0.5\paperwidth}
+  \setlength{\tillmittenbak}{-1\evensidemargin-1in-1\hoffset+1\mittenbak}
+  \setlength{\tilltextbottenbak}{-1\leftonpage+1\luftunderbak}}
+
+% Interna kommandon
+\newcommand{\@titelerror}{maintitle missing}
+\newcommand{\@huvudtitel}{%
+  \begin{flushleft}\@hugesc Default Title\end{flushleft}}
+\newcommand{\@undertitel}{}
+\newcommand{\@forfattare}{}
+\newcommand{\@forferror}{authors missing}
+\newcommand{\@forfcheck}{no}
+\newcommand{\@ptyp}{}
+\newcommand{\@typ}{}
+\newcommand{\@typrap}{Preprints in Mathematical Sciences\\}
+\newcommand{\@typexj}{}
+\newcommand{\@typexjeng}{Master's thesis\\}
+\newcommand{\@typexjsve}{Examensarbete\\}
+\newcommand{\@typknd}{}
+\newcommand{\@typkndeng}{Bachelor's thesis\\}
+\newcommand{\@typkndsve}{Examensarbete f{\"o}r Kandidatexamen\\}
+\newcommand{\@serie}{}
+\newcommand{\@serierap}{Preprints in Mathematical Sciences }
+\newcommand{\@serieexj}{Master's Theses in Artificial Intelligence }
+\newcommand{\@serieknd}{Bachelor's Theses in Artificial Intelligence }
+\newcommand{\@seriehead}{}
+\newcommand{\@datering}{}
+\newcommand{\@aar}{}
+\newcommand{\@aarnrerror}{issnum missing}
+\newcommand{\@aarnrwarn}{}
+\newcommand{\@aarnrwarning}{}
+\newcommand{\@aarnrcheck}{no}
+\newcommand{\@aarnrmsg}{issnum not used by option}
+\newcommand{\@aarnr}{\@aarnrerror}
+\newcommand{\@snumerror}{sernum missing}
+\newcommand{\@snumwarn}{}
+\newcommand{\@snumwarning}{}
+\newcommand{\@snummsg}{sernum not used by option}
+\newcommand{\@snum}{\@snumerror}
+\newcommand{\@snumcheck}{no}
+\newcommand{\@Lop}{}
+\newcommand{\@Lopexj}{E}
+\newcommand{\@Lopknd}{K}
+\newcommand{\@Loprap}{}
+\newcommand{\@nummer}{}
+\newcommand{\@snuminget}{}
+\newcommand{\@ISSN}{}
+\newcommand{\@spraak}{}
+\newcommand{\@adress}{}
+\newcommand{\@adresseng}{P.O. Box 616,6200 MD Maastricht,The Netherlands}
+\newcommand{\@adresssve}{P.O. Box 616,6200 MD Maastricht,The Netherlands}
+\newcommand{\@homepage}{http://www.maastrichtuniversity.nl/}
+\newcommand{\@avd}{}
+\newcommand{\@avdeng}{}
+\newcommand{\@avdsve}{}
+\newcommand{\@inst}{}
+\newcommand{\@insteng}{Faculty of Humanities \& Science}
+\newcommand{\@instsve}{Faculty of Humanities \& Science}
+\newcommand{\@lth}{}
+\newcommand{\@ltheng}{Department of Knowledge Engeneering}
+\newcommand{\@lthsve}{}%Lunds tekniska hgskola
+\newcommand{\@mnf}{}
+\newcommand{\@mnfeng}{Faculty of Humanities \& Science}
+\newcommand{\@mnfsve}{Naturvetenskaplig fakultet}
+\newcommand{\@lu}{}
+\newcommand{\@lueng}{Maastricht University}
+\newcommand{\@lusve}{Lunds universitet}
+\newcommand{\@logo}{}
+\newcommand{\@logoeng}{}
+\newcommand{\@logosve}{}
+\newcommand{\@lthlogo}{}
+\newcommand{\@lthlogoeng}{\@logoeng}
+\newcommand{\@lthlogosve}{}
+\newcommand{\@mnflogo}{}
+\newcommand{\@mnflogoeng}{\@logoeng}
+\newcommand{\@mnflogosve}{\@logosve}
+\newcommand{\@tillh}{}
+\newcommand{\@option}{}
+\newcommand{\@data}{\today}
+
+% Anvndarkommandon
+\newcommand{\maintitle}{}
+\newcommand{\subtitle}[1]{\renewcommand{\@undertitel}{%
+    \begin{flushleft}\@largesc #1\end{flushleft}}}
+\newcommand{\authors}[1]{
+  \renewcommand{\@forfattare}{%
+    \begin{flushleft}\@Largesc #1\end{flushleft}}
+  \renewcommand{\@forferror}{}
+}
+\newcommand{\pubtype}[1]{\renewcommand{\@ptyp}{#1\\}}
+\newcommand{\datum}[1]{\renewcommand{\@aar}{#1}}
+\newcommand{\issnum}[2]{
+  \renewcommand{\@aarnr}{#1:\@Lop#2\\}
+  \renewcommand{\@aarnrerror}{}
+  \renewcommand{\@aarnrwarning}{\@aarnrmsg}
+}
+\newcommand{\sernum}[3]{
+  \renewcommand{\@snum}{#1-#2-#3\\[.8ex]}%
+  \renewcommand{\@snuminget}{#1-#2-#3\\[.8ex]}
+  \renewcommand{\@snumerror}{}
+  \renewcommand{\@snumwarning}{\@snummsg}
+}
+\newcommand{\frontcover}{%
+  \ifthenelse{\equal{\@titelerror}{}}{}{\PackageError{mccover}{\@titelerror}{}}
+  \ifthenelse{\equal{\@forfcheck}{no}}{}{
+    \ifthenelse{\equal{\@forferror}{}}{}{\PackageError{mccover}{\@forferror}{}}
+  }
+  \ifthenelse{\equal{\@aarnrcheck}{no}}{}{
+    \ifthenelse{\equal{\@aarnrerror}{}}{}{\PackageError{mccover}{\@aarnrerror}{}}
+  }
+  \ifthenelse{\equal{\@aarnrwarn}{}}{}{\PackageWarning{mccover}{\@aarnrwarn\@option}{}}
+  \@sattlangder%
+  {\pagestyle{empty}\cleardoublepage\@normaln%
+    ~\vspace*{\fill}\\%
+    \hspace*{\tillvansterkant}%
+    \raisebox{\tilltextbotten}[0mm][0mm]{%
+      \makebox[0mm][l]{%
+        \begin{minipage}[b][\texthojd]{\textbredd}
+          \@huvudtitel
+          \@undertitel
+          \vspace*{7mm}
+          \@forfattare
+	  \@data \\\\\\\\\\Supervisors \\
+Dr. E. Smirnov\\Department of Knowledge Engeneering . Maastricht University\\\\
+	Prof. F. Buntinx\\Departement of General Practice . Katholieke Universiteit Leuven
+
+          \vspace*{\fill}
+          \@tillh%
+        \end{minipage}}}%
+    \@largesc%
+    \hspace*{\textbredd}%
+    \raisebox{\tillsidbotten}[0mm][0mm]{%
+      \makebox[0mm][l]{%
+        \begin{sideways}\begin{sideways}\begin{sideways}%
+              \makebox[0mm][l]{\rule[0.9ex]{\uppstreck}{1pt}}%
+              \rule[0.3ex]{\uppstreck}{1pt}\hspace*{\luft}%
+              ARTIFICIAL INTELLIGENCE\hspace*{\luft}%
+              \rule[0.3ex]{\nerstreck}{1pt}%
+              \makebox[0mm][r]{\rule[0.9ex]{\nerstreck}{1pt}}%
+            \end{sideways}\end{sideways}\end{sideways}}}%
+    \clearpage}
+  %--- 19/4-04
+  \ifthenelse{\boolean{@twocolumn}}{~\newpage}{}
+  %---
+  {~}\thispagestyle{empty}\newpage\setcounter{page}{1}}
+\newcommand{\backcover}{%
+  \ifthenelse{\equal{\@snumcheck}{no}}{}{
+    \ifthenelse{\equal{\@snumerror}{}}{}{\PackageError{mccover}{\@snumerror}{}}
+  }
+  \ifthenelse{\equal{\@snumwarn}{}}{}{\PackageWarning{mcdust}{\@snumwarn\@option}{}}
+  %--- 19/4-04
+  \if@twocolumn
+  \onecolumn
+  \fi
+  %---
+  \@sattlangder\newpage{%
+    \cleardoublepage{~}\pagestyle{empty}\newpage\@normaln%
+    ~\vspace*{\fill}\\%
+    \hspace*{\tillmittenbak}%
+    \raisebox{\tilltextbottenbak}[0mm][0mm]{%
+      \makebox[0mm][c]{%
+        \begin{minipage}[b]{\paperwidth}
+          \small\centering%
+      %     \@seriehead
+    %      \@nummer
+          \ifthenelse{\equal{\@avd}{}}{}{\@avd\\}
+          \@inst\\
+          \@lu\\
+          \@adress\\[0.8ex]
+          \@homepage%
+        \end{minipage}%
+        }}\newpage}}
+
+% Optionsinstllningar
+\DeclareOption{normal}{%
+  \renewcommand{\maintitle}[1]{%
+    \renewcommand{\@huvudtitel}{%
+      \begin{flushleft}\@hugesc #1\end{flushleft}}
+    \renewcommand{\@titelerror}{}
+  }}
+\DeclareOption{long}{%
+  \renewcommand{\maintitle}[1]{%
+    \renewcommand{\@huvudtitel}{%
+      \begin{flushleft}\@LARGEsc #1\end{flushleft}}
+    \renewcommand{\@titelerror}{}
+  }}
+
+\DeclareOption{mc}{%
+  }
+\DeclareOption{ma}{%
+  \renewcommand{\@avdeng}{Department of Knowledge Engeneering}
+  \renewcommand{\@avdsve}{Matematik}
+  }
+\DeclareOption{ms}{%
+  \renewcommand{\@avdeng}{Mathematical Statistics}
+  \renewcommand{\@avdsve}{Matematisk statistik}
+  }
+\DeclareOption{na}{%
+  \renewcommand{\@avdeng}{Numerical Analysis}
+  \renewcommand{\@avdsve}{Numerisk analys}
+  }
+
+\DeclareOption{eng}{%
+  \renewcommand{\@typexj}{\@typexjeng}
+  \renewcommand{\@typknd}{\@typkndeng}
+  \renewcommand{\@avd}{\@avdeng}
+  \renewcommand{\@inst}{\@insteng}
+  \renewcommand{\@lth}{\@ltheng}
+  \renewcommand{\@mnf}{\@mnfeng}
+  \renewcommand{\@logo}{\@logoeng}
+  \renewcommand{\@lthlogo}{\@lthlogoeng}
+  \renewcommand{\@mnflogo}{\@mnflogoeng}
+  \renewcommand{\@lu}{\@lueng}
+  \renewcommand{\@adress}{\@adresseng}
+  \renewcommand{\@spraak}{\selectlanguage{english}}
+  }
+\DeclareOption{swe}{%
+  \renewcommand{\@typexj}{\@typexjsve}
+  \renewcommand{\@typknd}{\@typkndsve}
+  \renewcommand{\@avd}{\@avdsve}
+  \renewcommand{\@inst}{\@instsve}
+  \renewcommand{\@lth}{\@lthsve}
+  \renewcommand{\@mnf}{\@mnfsve}
+  \renewcommand{\@logo}{\@logosve}
+  \renewcommand{\@lthlogo}{\@lthlogosve}
+  \renewcommand{\@mnflogo}{\@mnflogosve}
+  \renewcommand{\@lu}{\@lusve}
+  \renewcommand{\@adress}{\@adresssve}
+  \renewcommand{\@spraak}{\selectlanguage{swedish}}
+  }
+
+\DeclareOption{other}{%
+  \renewcommand{\@option}{ other}
+  \renewcommand{\@typ}{\@ptyp}
+  \renewcommand{\@datering}{\ifthenelse{\equal{\@aar}{}}{}{\@aar\\}}
+  \renewcommand{\@nummer}{\@snuminget}
+  \renewcommand{\@seriehead}{\ifthenelse{\equal{\@aar}{}}{}{\@aar\\[.8ex]}}
+  \renewcommand{\@aarnrwarn}{\@aarnrwarning}
+  \renewcommand{\@snumwarn}{\@snumwarning}
+  }
+\DeclareOption{report}{%
+  \renewcommand{\@option}{ report}
+  \renewcommand{\@typ}{\@typrap}
+  \renewcommand{\@serie}{\@serierap}
+  \renewcommand{\@Lop}{\@Loprap}
+  \renewcommand{\@datering}{\@aarnr}
+  \renewcommand{\@ISSN}{ISSN 1403-9338\\[.8ex]}
+  \renewcommand{\@nummer}{\@snum}
+  \renewcommand{\@avd}{\@avdeng}
+  \renewcommand{\@inst}{\@insteng}
+  \renewcommand{\@lth}{\@ltheng}
+  \renewcommand{\@mnf}{\@mnfeng}
+  \renewcommand{\@logo}{\@logoeng}
+  \renewcommand{\@lthlogo}{\@lthlogoeng}
+  \renewcommand{\@mnflogo}{\@mnflogoeng}
+  \renewcommand{\@lu}{\@lueng}
+  \renewcommand{\@adress}{\@adresseng}
+  \renewcommand{\@seriehead}{\@serie\@datering}
+  \renewcommand{\@aarnrcheck}{yes}
+  \renewcommand{\@aarnrwarn}{}
+  \renewcommand{\@snumcheck}{yes}
+  \renewcommand{\@snumwarn}{}
+  }
+
+\DeclareOption{bachelor}{%
+  \renewcommand{\@option}{ bachelor}
+  \renewcommand{\@typ}{\@typknd}
+  \renewcommand{\@serie}{\@serieknd}
+  \renewcommand{\@Lop}{\@Lopknd}
+  \renewcommand{\@datering}{\@aarnr}
+  \renewcommand{\@ISSN}{ISSN 1654-6229\\[.8ex]}
+  \renewcommand{\@nummer}{\@snum}
+  \renewcommand{\@seriehead}{\@serie\@datering\@ISSN}
+  \renewcommand{\@forfcheck}{yes}
+  \renewcommand{\@aarnrcheck}{yes}
+  \renewcommand{\@aarnrwarn}{}
+  \renewcommand{\@snumcheck}{yes}
+  \renewcommand{\@snumwarn}{}
+  }
+
+\DeclareOption{master}{%
+  \renewcommand{\@option}{ master}
+  \renewcommand{\@typ}{\@typexj}
+  \renewcommand{\@serie}{\@serieexj}
+  \renewcommand{\@Lop}{\@Lopexj}
+  \renewcommand{\@datering}{\@aarnr}
+  \renewcommand{\@ISSN}{ISSN 1404-6342\\[.8ex]}
+  \renewcommand{\@nummer}{\@snum}
+  \renewcommand{\@seriehead}{\@serie\@datering\@ISSN}
+  \renewcommand{\@forfcheck}{yes}
+  \renewcommand{\@aarnrcheck}{yes}
+  \renewcommand{\@aarnrwarn}{}
+  \renewcommand{\@snumcheck}{yes}
+  \renewcommand{\@snumwarn}{}
+  }
+
+\DeclareOption{mnf}{%
+  \renewcommand{\@tillh}{%
+    %\@mnflogo
+    %\@mnf\\
+. \\
+    \@inst\\ \@avd \\
+     \@lueng
+    }}
+
+
+% Start
+\ExecuteOptions{mc,eng,lu,normal,other}
+\ProcessOptions
+\RequirePackage{calc,epsfig,rotating,ifthen}
+
+% Avstnd
+% Logo-filernas hjder
+\newlength{\Ruta}\setlength{\Ruta}{100pt}% Engelsk LU
+\newlength{\lthRuta}\setlength{\lthRuta}{127.5pt}% lthlogons hjd
+\newlength{\sveRuta}\setlength{\sveRuta}{106pt}% logons hjd
+\newlength{\svelthRuta}\setlength{\svelthRuta}{111pt}% lthlogons hjd
+\newlength{\Pre}\setlength{\Pre}{-4pt}
+\newlength{\svePre}\setlength{\svePre}{-4pt}
+\newlength{\lthPre}\setlength{\lthPre}{-15pt}
+\newlength{\svelthPre}\setlength{\svelthPre}{-4pt}%{-3.5pt}
+\newlength{\Sub}\setlength{\Sub}{6pt}
+\newlength{\sveSub}\setlength{\sveSub}{5.5pt}
+\newlength{\lthSub}\setlength{\lthSub}{5.5pt}
+\newlength{\svelthSub}\setlength{\svelthSub}{6pt}
+%%%%%% placeringsavstnd
+\setlength{\paperheight}{297mm}
+\setlength{\paperwidth}{210mm}
+\newlength{\textbottom}
+\newlength{\leftonpage}
+\newlength{\lufttillvanster}\setlength{\lufttillvanster}{35mm}
+\newlength{\lufttillhoger}\setlength{\lufttillhoger}{30mm}
+\newlength{\luftunder}\setlength{\luftunder}{45mm}
+\newlength{\tillvansterkant}
+\newlength{\tilltextbotten}
+\newlength{\luft}\setlength{\luft}{0.5ex}
+\newlength{\tillsidbotten}
+\newlength{\luftover}\setlength{\luftover}{40mm}
+\newlength{\texthojd}
+\newlength{\textbredd}
+\newlength{\MC}
+\settowidth{\MC}%
+{\@largen \hspace*{\luft}CENTRUM SCIENTIARUM MATHEMATICARUM\hspace*{\luft}}
+\newlength{\nerstreck}
+\newlength{\uppstreck}
+\newlength{\helastrecket}
+%%%%% bak %%%%%
+\newlength{\luftunderbak}\setlength{\luftunderbak}{30mm}
+\newlength{\mittenbak}
+\newlength{\tillmittenbak}
+\newlength{\tilltextbottenbak}%

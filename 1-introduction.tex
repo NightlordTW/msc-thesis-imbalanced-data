@@ -1,0 +1,16 @@
+\chapter{Introduction}\label{Intro}
+Machine learning is a part of Artificial Intelligence that aims at developing learning machines capable of improving themselves by experience. One of the core tasks to build such machines is the classification task. This task involves estimating the class for an object given data that represent the experience.
+ An example of classification is the categorization of bank loan applications as either safe or risky. Another example can be found in the field of general practice, where a patient's diagnosis needs to be made based on a certain number of observations.
+
+The classification task imposes difficulties when the classes present in the training data are imbalanced, i.e. some classes are given with very few instances. These classes are called minority classes and there are many applications where they are more important than well-represented majority classes~\cite{miningwith04}~\cite{Drummond05Severe}~\cite{Japkowicz02classimbalance}. The main reasons for class imbalanced data are the phenomena under study and/or the costs for deriving instances.  For example, in medicine, the task of diagnosing serious infections in children is very important and difficult. The task is difficult because the majority of infections are not serious, but there exists a minority of infections that can be very harmful.
+
+The standard approaches in machine learning to the classification task perform poorly in the presence of class imbalanced data. This is due to the fact that most learning algorithms train classifiers by optimizing accuracy. As a result, the classifiers perform well on majority classes and badly on minority ones. In the last decades, many specific approaches to class imbalanced data were proposed.  The approaches try to change the class distributions by boosting the proportion of the minority class. Amongst others it is worth mentioning sampling approaches, cost-sensitive approaches, feature selection approaches and ensemble approaches. (reference...)
+
+This thesis provides overview of the approaches to the classification problem in the presence of class imbalanced data.  The main contribution is a new generative approach to the problem that we call \textit{Naive Bayes Sampling}.  In this context, we formulate our main research questions:
+
+\begin{enumerate}
+\item Which existing techniques improve classification in the presence of class imbalanced data?
+\item Can Naive Bayes Sampling additionally improve classification for class imbalanced data?
+\end{enumerate}
+
+We try to answer the research questions in the next five chapters. Chapter~\ref{Classification} introduces the classification task and the machine learning approach to this task. The problem of classification in imbalanced datasets is discussed in chapter~\ref{imbalanced}. Chapter~\ref{newapproach} introduces our Naive Bayes Sampler approach. Our approach is experimentally compared with other approaches to class imbalanced data in chapter~\ref{Experiments}. Finally, chapter~\ref{Conclusion} summarizes the results and provides answers to the research questions.

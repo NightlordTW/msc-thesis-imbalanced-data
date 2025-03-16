@@ -1,0 +1,128 @@
+\chapter{Classification}\label{Classification}
+In this chapter, the general classification task will be described in section~\ref{classification-task}. Next, the training and classification of a classifier are discussed in section~\ref{classification-process}. Finally, possible ways to evaluate a classifier are discussed in section~\ref{classification-evaluation}.
+
+
+\section{Classification Task}\label{classification-task}
+The task of classification can be described as the construction of a classifier which best estimates the correct class of an object. Often, classification is performed in detection tasks such as image recognition, medical diagnosis, speech analysis \& support, etc. For example, loan companies want to predict the reliability of their customers in order to minimize the risk of impossible refunds. Another example is the detection of oil slicks from satellite images in order to give early warning of ecologic disasters and deter illegal dumping. In each one of these examples, the prediction task considers the recognition of \textit{categorical labels}, such as "safe" or "risky" for the loan application. These categories can also be represented by discrete values, where the ordering among values has no meaning. For example, the values 1, 2 and 3 may be used to represent different types of ecologic disasters.\\
+In order to allow the construction of such classifiers, the learning algorithm is presented some training examples that demonstrate the intended relation of input and output values. For this reason, classification is defined as a supervised learning problem~\cite{bishop}.\\Next, the learner is supposed to approximate the correct output, even for examples that have not been shown during training. Without any additional assumptions, this task cannot be solved exactly since unseen situations might have an arbitrary output value. The kind of necessary assumptions about the nature of the target function are subsumed in the term \textit{inductive bias}~\cite{mitchell80biases}. With other words, an unbiased generalizer will make no a priori assumptions about which classes of instances are most likely, but bases all its choices on the observed data. This means that an unbiased generalization system cannot make classifications of instances other than the training instances. For this reason, the inductive bias of a learner is the source of its ability to generalize beyond training data, and therefore a crucial choice in the classification task.\\
+\newpage 
+The classification task  can therefore be defined as follows~\cite{RegionClassif08}: assume an object space X of size \textit{m} and a set of possible classifications Y. The instance space Z over X and Y is defined as \(X \times Y\). The training data \(B\) is a bag \(\lbrace z_1,z_2,...,z_n \rbrace\) of instances \(z_i \in Z\) drawn from the same unknown probability distribution \(P_Z = P_{XY}\).  Furthermore, assume we are given a fixed set \(H \subseteq Y^X\) of functions \(h:X \rightarrow Y\) referred to as hypothesis space. This space considers the set of all possible hypotheses \(H = \lbrace h_1, ..., h_l \rbrace \) from which a learner can choose to approximate the mapping from X to Y. Classification then aims to find the function \(h^*\) which best estimates the mapping from X to Y on new yet unseen patterns \(z =(x,y)\) drawn according to \(P_{XY}\). 
+
+\section{Training and Classification}\label{classification-process}
+In order to allow the learning algorithm to learn the intended relation of data classes of concepts, it is presented a number of training objects \(z_i \in Z\) during the \textit{training phase}. As discussed in the previous section, these objects are described by a certain number of attributes (called features) in the X space together with their concept definition in the Y space (the class label). The  learning algorithm then builds an hypothesis \(h^*\) that best predicts the associated class label \(y\) of a given instance \(X\). An important issue regarding the classification process, is the avoidance of overfitting. Overfitting often occurs when learning was performed too long or where training examples are rare. In such situations, the learner may describe random error or noise of the training data, which has no causal relation to the target function. Learning algorithms must therefore find ways to distinguish between relevant patterns and accidental regularities that have a negative influence on the learner’s generalization abilities. By relaxing the requirement to perfectly fit training data, a learner can usually produce simpler, more accurate hypotheses.\\
+Typically, a learned hypothesis can take many forms depending on the used learning algorithm, of which some are directly interpretable to external users and others aren't.  For example, hypotheses which are described by classification rules or decision trees, involve the use of decision boundaries. Other hypotheses on the other hand involve the use of mathematical formulas which eg. calculate the nearest neighbours or the maximum posterior distribution. For this reason, we can make a division into interpretable and non-interpretable classifiers, so called \textit{white boxes} and \textit{black boxes}.\\
+When a classifier which describes a possible relation between X and Y of the training objects is learned, it can be used to predict class membership of unseen objects. By simply applying the learned hypothesis \(h^*\) on presented instances, class predictions \(\widehat{y}\) are obtained.
+
+\newpage
+\subsection{Feature Selection}
+Many learning algorithms perform a feature selection process in order to build a consistent hypothesis. The main idea of feature selection is to choose a subset of input features by eliminating features with little or no predictive information. The best subset contains the least number of dimensions that most contribute to a certain estimate measure such as accuracy. Feature selection can significantly improve the comprehensibility of the resulting hypotheses and often builds classifiers that generalize better.   
+
+\subsubsection{Splitting criteria} 
+
+\begin{itemize}
+\item \textit{Information Gain} - Many decision tree and decision rule algorithms use the \textit{information gain} criterion in order to select a feature to focus/split on.  This criterion measures how well a given attribute separates training examples into targeted classes, which is then used to select the one with the highest information (information being the most useful for classification). This \textit{gain} is based on the entropy principle, which characterizes the impurity of an arbitrary set of examples~\cite{gini-ig}.  The entropy of a sample \textit{X} is defined as follows:
+\begin{center}\( H(X)= -\sum_{i=1}^k {P(y_i|X)\,log_2 P(y_i|X)}\)\end{center}
+where \(P(y_i|X)\) is the expected probability of data point in \textit{X} being labeled with class \(y_i\), and \textit{k} is the number of classes.  The weighted entropy of a decision/split, where \textit{X} has been partioned into \(X_L\) and \(X_R\), is defined as follows:
+\begin{center}\(H(X_L,X_R)= \frac{|X_{L}|}{|X|} H(X_L) + \frac{|X_{R}|}{|X|} H(X_R)\)\end{center}
+Notice entropy is 0 if all members of \(X\) belong to the same class (the data is perfectly classified), and 1 if the data contains an equal proportion of positive and negative examples ("totally random"). Finally, the information gain for a given split can be defined as:
+\begin{center}\( Gain(X,X_{L},X_{R})= H(X)-H(X_{L},X_{R})\)\end{center}
+The higher the information gain, the more reduction in entropy due to the split.  Possible splits are evaluated and the one resulting into the highest gain is chosen.
+
+\newpage
+\item \textit{Gini Index \& CART Index} - Instead of entropy, another measure can be used which gives an indication of how pure or mixed a given sample is. For example, the \textit{Gini Index} is defined as follows:
+\begin{center}\(G(X) = 1 - \sum_{i=1}^k{P(y_i|X)^2}\)\end{center}
+Further, the information gain in terms of the Gini index can be computed:
+\begin{center}\( Gain(X,X_{L},X_{R})= G(X)-G(X_{L},X_{R})\)\end{center}
+Other measures can also be used in stead of information gain to evaluate the splits.  For example, the Classification And Regression Trees (CART) measure prefers a split that tries to maximize the difference between the class probability distribution function in the two partitions, and is given as:
+\begin{center}\(CART(X_L,X_R) = 2 \frac{|X_L|}{|X|} \frac{|X_R|}{|X|} \sum_{i=1}^k{|P(y_i|X_L)-P(y_i|X_R)|}\)\end{center}
+The choice of a splitting function is often trivial in order to find an optimal solution, but can be very hard to decide on.  For example, a study showed that the Gini Index function and the Information Gain function only disagree in 2\% on a selected split.~\cite{gini-ig}  Moreover, both Information gain and Gini are highly skew dependent (they favor the splitting of features that cover the majority class).
+\item Other common splitting criteria are \textit{Chi-square} (\(\chi ^2\)), used in CHi-squared Automatic Interaction Detector (CHAID), and \textit{Odds ratio} (OR), often used in logistic regression.
+\end{itemize}
+
+\subsubsection{Estimate measures} 
+Many learning algorithms use probability estimates in order to make predictions with the obtained classifier. For example, Bayesian classifiers estimate the probability that an example belongs to each class. Similarly, a decision tree can also produce an estimate of the probability that an example belongs to each class given that it is classified by a particular leaf by examining the classes of the training examples at the leaf. Therefore, the use of of reliable probabilistic estimates is important~\cite{probability_estimates}. If there are \(N_i\) examples of a class \(i\) at a leaf and \(k\) classes, then the probability that an example at the leaf is a member of class \(i\) is given by:
+\begin{center}\(P(y_i|X) = \frac{N_i}{\sum_{j=1}^k{N_j}}\)\end{center}
+One of the problems of this measure however is that it does not provide accurate estimates for classes where (almost) no examples are present. For this reason, other estimate measures have been defined as follows:
+\newpage
+\begin{itemize}
+\item \textit{Laplace estimate} - The Laplace estimate smooths the probability estimates in order to make them less extreme, by introducing a prior probability \(1/k\)~\cite{probability_estimates}:
+\begin{center}\(P(y_i|X) = \frac{N_{i}+1}{k + \sum_{j=1}^k{N_j}}\)\end{center}
+However, Laplace estimates might not be very appropriate for highly imbalanced datasets (Zadrozny \& Elkan 2001).  In those cases, it could be useful to incorporate the prior of positive class to smooth the probabilities so that the estimates are shifted towards the minority class base rate.  
+\item \textit{m-estimate} - A more general definition of estimates such as the Laplace estimate, is catched by the m-estimate. This estimate uses a parameter \(m\) which controls the role of the prior probabilities \(b_i\) of the considered class \(i\) and the evidence provided by the examples.
+\begin{center}\(P(y_i|X) = \frac{N_{i}+mb_i}{m + \sum_{j=1}^k{N_j}}\)\end{center}
+Higher values for \(m\) give more weight to the prior probabilities and less to the examples, therefore appropriate for datasets that contain more noise. The prior \(b_i\) can be estimated from the training set using relative frequency.\\
+The Laplace estimate is a special case obtained by setting \(m\) to \(k\), and \(b\) to \(1/k\) for all classes (uniform distribution).
+
+\end{itemize}
+
+
+
+
+\newpage
+\section{Evaluation}\label{classification-evaluation}
+In order to have an estimate of how trained classifiers will perform in practice, they can be evaluated. This is achieved by providing the classifier with new, unseen data \(z_{n+i} \in Z\) (also called \textit{test} or \textit{evaluation} data). The predictions \(\widehat{y}\) can then be compared with the resp. actual \(y\).  It is important that this test data is independent from the data used to train the classifier.  This is because estimating the performance of a learned model using the original training data can result in misleading overoptimistic estimates due to overspecialization of the learning algorithm to the data.\\
+Usually, the obtained predictions of a classifier are compared through the use of a \textit{confusion matrix}.  Assuming \(k\) possible class labels, a confusion matrix is a table of of size \(k\) by \(k\), where entry \(CM_{i,j}\) describes the number of instances of class \textit{i} that were labeled by the classifier as class \textit{j}. With other words, a confusion matrix describes the type and amount of (mis)classifications made in the test set for all existing classes. This matrix then allows researchers to create an evaluation metric which provides a performance score for the evaluated classifier, which can be used to compare developed techniques and therefore to focus on worthwile research improvements.\\
+As an example, a typical confusion matrix is showed for the situation only two different class labels are present. In this situation, the class of interest is often called the \textit{positive} class (and the other one the \textit{negative} class), and the different types of (mis)classifications are called as follows:\\
+
+\begin{table}[h]
+\centering                          
+\begin{tabular}{l c | c c}            
+& & \multicolumn{2}{c}{Actual} \\
+& & Positive Class & Negative Class \\ [0.5ex]  
+\hline     
+& Positive Class & \textit{True Positives (TP)} & \textit{False Positives (FP)} \\[-1ex]
+\raisebox{1.5ex}{Predicted} &Negative Class  &\textit{False Negatives (FN)} & \textit{True Negatives (TN)}\\[1ex] 
+\hline
+\end{tabular}
+\label{tab:PPer}
+\end{table}
+
+\newpage
+\subsection{Evaluation Metrics}\label{eval-metrics}
+As soon as such a confusion matrix is constructed after the test set is processed, several performance metrics can be constructed:
+
+\subsubsection{Accuracy}
+Accuracy is the most common evaluation metric, and measures the number of instances correctly classified (\(N\) stands for the total number of tested instances):
+\begin{center}\(Acc = \frac{\sum_{i=1}^k{CM_{i,i}}}{N}\)\end{center}
+
+\subsubsection{Area under the ROC curve (AUC)}
+Another common metric to assess overall classification performance, is the area under the ROC curve.   ROC graphs are often used to depict the tradeoff between hit rates and false alarm rates of classifiers. Technically, the ROC curve shows the ability of the classifier to rank the positive instances relative to the negative instances.  In addition, ROC curves have properties that make them especially useful for domains with skewed class distributions and unequal classification error costs. In order to come up with a single value that represents the expected performance of a ROC graph, one might measure the area under its curve, also called AUC.  Since the AUC of a classifier is equivalent to the probability that the classifier will rank a randomly chosen positive instance higher than a randomly chosen negative instance, no realistic classifier should have an AUC close to 0.5 (which is equivalent to random guessing)~\cite{roc}~\cite{_miningwith}. 
+
+\subsubsection{Precision and Recall}
+Precision and recall are metrics for binary classification, and are mainly known from the information retrieval community:
+\begin{center}\(Precision = \frac{TP}{TP+FP}\)\end{center}  
+\begin{center}\(Recall = \frac{TP}{TP+FN} = 1 - Sensitivity\)\end{center} 
+A precision score of 1.0 means that every example predicted as a positive example does indeed belong to the positive class (but says nothing about the number of positive examples that were not labeled correctly) whereas a recall score of 1.0 means that every positive example was predicted as belonging to the positive class (but says nothing about how many other examples were incorrectly also predicted as belonging to the positive class).
+
+\newpage
+\subsubsection{Sensitivity and Specificity} Sensitivity and specificity are performance measures of a binary classification. The sensitivity (also called recall rate) measures the proportion of actual positives which are correctly identified as such within the total of all positives. The specificity measures the proportion of negatives which are correctly identified within the total of all negatives.  In general, there is a trade-off between both measures which can be represented graphically using a ROC curve.
+\begin{center}\(sensitivity = \frac{TP}{TP+FN}\)\end{center}
+\begin{center}\(specificiy = \frac{TN}{TN+FP}\)\end{center}
+
+\subsubsection{Geometric Mean}
+The geometric mean is a variation of precision and recall and is defined as follows:
+\begin{center}\(GM = \sqrt{Precision \times Recall}\)\end{center}
+According to the authors, this measure has the distinctive property of being independent of the distribution of the examples between classes.  The advantage of this measure (like AUC) is that it combines sensitivity and specificity metrics, providing a better way to represent the overall performance of a classifier than a measure such as accuracy.
+
+\newpage
+\subsection{Statistical Tests}
+The metrics discussed in~\ref{eval-metrics} allow one to compare the performance of several classifiers. However, in order to statistically prove that one classifier performs better than another, it is important that learning and evaluation is repeated several times using different training and test sets. As a result, each classifier will no longer be represented by one, but by a whole sample of the same performance measure. Usually, a \textit{paired t-test} is then used to compare such samples in order to calculate whether one classifier performs significantly better than another (according to the used evaluation metric). This calculation is based on the assumption that the obtained samples follow a Gaussian distribution. This allows the paired t-test to compute whether the means of paired samples are equal, and therefore to prove whether one classifier produces better results than another.
+
+
+\subsection{Separating a Validation Set}
+In order to estimate the performance (through evaluation metrics) of the learning algorithm, an independent validation set is used to test the induced hypotheses from the training set. As the quality of the estimate strongly depends on the size of the test set, it is important that this test contains enough instances. Since it is practically impossible to obtain an independent test set in many situations (as labeled data is very costly), some solutions have been proposed in order to overcome this problem:
+
+\paragraph{Holdout method and Random Subsampling}
+In the holdout method, data is randomly partioned into two independent sets, namely a \textit{training} and a \textit{test} set. Typically, two-thirds of the data are allocated to the training set, and the remaining one-third is allocated to the test set. The training set is used to derive the model, after which the trained model is evaluated by comparing its predictions on the test set with their actual class labels. This estimate is however pessimistic, since only a portion of the initial data is used to derive the model.\\Random subsampling is a variation to the holdout method in which the holdout method is repeated \textit{k} times. The overall performance estimate is taken as the average of the performance measures obtained from each iteration.~\cite{Jiawei06}
+
+\paragraph{Cross-validation}
+In \textit{k}-fold cross-validation, the initial data are randomly partioned into \textit{k} mutually exclusive subsets (folds) each of approximately equal size. Training and testing is performed \textit{k} times. In iteration \textit{i}, fold \(D_i\) is reserved as the test set, and the remaining partitions are collectively used to train the model. Unlike the holdout and random subsampling methods, each sample is used the same number of times for training and once for testing. The overall performance is estimated by averaging the separate evaluations obtained during the \textit{k} iterations.\\Leave-one-out is a special case of \textit{k}-fold cross-validation where \textit{k} is set to the number of initial examples, such that each time only one sample is \textit{left out} at a time for the test set.
+\newpage
+In stratified cross-validation, the folds are stratified so that the class distribution in each fold is approximately the same as that in the original dataset. In general, stratified 10-fold cross-validation is recommended for estimating classifier performance due to its relatively low bias and variance.~\cite{Jiawei06}
+
+\paragraph{Bootstrap}~\label{evaluation-bootstrap}
+Bootstrapping was introduced in 1979 by Bradley Efron and considers the use of bootstrap samples (defined as random samples of size \(n\) drawn from the original distribution) in order to estimate the desired classifier performance metric \(\widehat{\theta}\). The bootstrap algorithm works by drawing many independent bootstrap samples, evaluating the corresponding bootstrap replications, and estimating the standard error of \(\widehat{\theta}\) by the emperical standard deviation of the replications~\cite{Cheung01Adv}.\\In \cite{BootstrapMethods97}, Davison and Hinkley describe how resampling from the original data can be used to obtain reliable standard errors, confidence intervals, and other measures of uncertainity. Although literally sampling from the data initially was accepted as a fraud (new samples are selected with replacement from the original observation, with the result that some of the original observations are repeated more than once in the bootstrap sample), it turned out that a wide range of statistical problems could be tackled this way. As a result, the need to over-simplify complex problems got solved, and allowed quick approximate solutions. Another interesting feature of bootstrapping is that the variance is reduced, and therefore helps avoiding overfitting. Finally, bootstrapping over cross-validation allows to provide confidence intervals for the estimated value. For this reason, bootstrapping techniques are widely implemented in the field of machine learning (eg bagging). Although there exist several bootstrap methods, a commonly used one is the .632 bootstrap.~\cite{Jiawei06}
+
+\subsection{Summary}
+In general, classifier evaluation is often performed following a de-facto strategy that involves the selection of an evaluation metric (often accuracy), a large enough number of domains (often chosen from the UCI Repository for Machine Learning), a convincing number of previously designed strong learning algorithms to be compared to one another or pitted against a new proposed method, and running (stratified or not) 10-fold cross-validation experiments on each domain, possibly, repeating these experiments several times on different shufflings of the data.\\
+

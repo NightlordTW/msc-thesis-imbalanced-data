@@ -1,0 +1,210 @@
+\lstset{language=Java, caption=Bootstrap Filter, label=DescriptiveLabel}
+\begin{lstlisting}
+import java.util.*;
+import weka.core.*;
+import weka.core.Capabilities.*;
+import weka.filters.*;
+
+
+/**
+ * This filter makes a bootstrap of a specific class. In order to apply it
+ * correctly, the filter should be used in combination with a
+ * FilteredClassifier, such that the bootstrap only uses training data
+ *
+ * Apr 10, 2009
+ * @author Thomas Debray
+ * @version $Revision: 1.0 $
+ */
+public class Bootstrap extends Filter implements SupervisedFilter,
+        OptionHandler, TechnicalInformationHandler {
+
+    /** the class to oversample **/
+    protected int m_ClassValueIndex = 0;
+
+     /** the seed **/
+     protected int m_RandomSeed = 1;
+
+     /** the ratio to oversample **/
+     protected double m_SampleRatio = 1;
+
+
+     @Override
+     public Capabilities getCapabilities() {
+         Capabilities result = super.getCapabilities();
+
+         // attributes
+         result.enableAllAttributes();
+         result.enable(Capability.MISSING_VALUES);
+
+         // class
+         result.enable(Capability.NOMINAL_CLASS);
+         result.enable(Capability.MISSING_CLASS_VALUES);
+         return result;
+    }
+    
+    
+
+     @Override
+     public boolean setInputFormat(Instances instanceInfo) throws Exception {
+         super.setInputFormat(instanceInfo);
+         super.setOutputFormat(instanceInfo);
+         return true;
+     }
+
+    @Override
+    public boolean input(Instance instance) {
+        if (getInputFormat() == null)
+            throw new IllegalStateException("No input instance format defined");
+        if (m_NewBatch) {
+            resetQueue();
+            m_NewBatch = false;
+        }
+        if (m_FirstBatchDone) {
+            push(instance);
+            return true;
+        } else {
+            bufferInput(instance);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean batchFinished() throws Exception {
+        if (getInputFormat() == null)
+            throw new IllegalStateException("No input instance format defined");
+
+        if (!m_FirstBatchDone) {
+            doBootstrapping();
+        }
+        flushInput();
+
+        m_NewBatch = true;
+        m_FirstBatchDone = true;
+        return (numPendingOutput() != 0);
+    }
+
+    private void doBootstrapping() {
+        int numpos = getInputFormat().attributeStats(getInputFormat()
+                .classIndex()).nominalCounts[m_ClassValueIndex];
+        int [] posInd = new int[numpos];
+        int [] posWeights = new int[numpos];
+
+
+        //store the index of positive instances
+        int k=0;
+        for(int i=0; i<getInputFormat().numInstances(); i++) {
+            Instance instance = (Instance) getInputFormat().instance(i);
+            if (instance.classValue() == m_ClassValueIndex)
+                posInd[k++] = i;
+            else
+                push((Instance)instance.copy());
+        }
+
+        //create n new instances
+        int instancesToCreate = (int)Math.round(numpos*m_SampleRatio);
+        Random random = new Random(m_RandomSeed);
+        for (int i=0; i<instancesToCreate; i++)
+        {
+            int index = random.nextInt(numpos);
+            posWeights[index]++;
+        }
+
+        //alter the weight of the instances and push them
+        for (int i=0; i<numpos; i++)
+        {
+            Instance next = getInputFormat().instance(posInd[i]);
+            next.setWeight(posWeights[i]);
+            push(next);
+        }
+    }
+
+    public String getRevision() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Enumeration listOptions() {
+        Vector newVector = new Vector();
+        newVector.addElement(new Option(
+                "\tSpecifies the random number seed\n"
+                + "\t(default 1)",
+                "S", 1, "-S <num>"));
+        newVector.addElement(new Option(
+                "\tSpecifies the ratio to bootstrap"
+                +"(default 1 - keep original\n"
+                +"\tamount of positive instances)\n"
+                +"\t(default 0: no oversampling))\n",
+                "R", 1, "-R <value-index>"));
+        newVector.addElement(new Option(
+                "\tSpecifies the positive class value (default 0))\n",
+                "C", 1, "-C <value-index>"));
+        return newVector.elements();
+    }
+
+    public void setOptions(String[] arg0) throws Exception {
+        String seedStr = Utils.getOption('S', arg0);
+        if (seedStr.length() != 0) {
+            setRandomSeed(Integer.parseInt(seedStr));
+        } else {
+            setRandomSeed(1);
+        }
+        String classValueIndexStr = Utils.getOption( 'C', arg0);
+        if (classValueIndexStr.length() != 0)
+            setClassValue(Integer.parseInt(classValueIndexStr));
+        String sampleRatio = Utils.getOption('R',arg0);
+        if (sampleRatio.length() != 0)
+            setSampleRatio(Double.parseDouble(sampleRatio));
+    }
+
+    public String[] getOptions() {
+        Vector<String>	result;
+
+        result = new Vector<String>();
+        result.add("-C");
+        result.add("" + getClassValue());
+        result.add("-S");
+        result.add("" + getRandomSeed());
+        result.add("-R");
+        result.add("" + getSampleRatio());
+
+        return result.toArray(new String[result.size()]);
+    }
+
+    public TechnicalInformation getTechnicalInformation() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    /* PARAMETER RANDOM SEED **/
+    public String randomSeedTipText() {
+        return "The seed used for bootstrapping.";
+    }
+    public int getRandomSeed() {
+        return m_RandomSeed;
+    }
+    public void setRandomSeed(int value) {
+        m_RandomSeed = value;
+    }
+
+
+    /* PARAMETER MINORITY CLASS VALUE **/
+    public String classValueTipText() {
+        return "The index of the class value which should be oversampled. ";
+    }
+    public void setClassValue(int value) {
+        m_ClassValueIndex = value;
+    }
+    public int getClassValue() {
+        return m_ClassValueIndex;
+    }
+
+    /* PARAMETER SAMPLE RATIO **/
+    public String sampleRatioTipText() {
+        return "The sample ratio of the class to be bootstrapped";
+    }
+    public void setSampleRatio(double value) {
+        this.m_SampleRatio = value;
+    }
+    public double getSampleRatio() {
+        return m_SampleRatio;
+    }
+}
+\end{lstlisting}
